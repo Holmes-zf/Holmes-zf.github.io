@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="./jquery-1.11.0.min.js"></script>
+    <title>吃啥呢？</title>
+    <style>
+        body {
+            -moz-user-select: none;/*火狐*/
+            -webkit-user-select: none;/*webkit浏览器*/
+            -ms-user-select: none;/*IE10*/
+            -khtml-user-select: none;/*早期浏览器*/
+            user-select: none;
+        }
+        .my-menus {
+            width: 80%;
+            min-height: 200px;
+            margin: 0 auto;
+        }
+        .my-menus::after {
+            display: block;
+            clear: both;
+            content: "";
+        }
+        .my-menus .eat-menus {
+            width: calc( 100% - 88px );
+            min-height: 184px;
+            padding: 8px;
+            float: left;
+            background: #e3d2d2;
+        }
+
+        .my-menus .select-btn {
+            float: left;
+            width: 30px;
+            height: calc( 100% - 14px );
+            min-height: 186px;
+            border: 1px dashed yellow;
+            text-align: center;
+            padding: 6px 20px;
+            cursor: pointer;
+            color: #00ffea;
+        }
+        .menu-item {
+            display: inline-block;
+            height: 20px;
+            line-height: 20px;
+            padding: 2px 12px;
+            border-radius: 9px;
+            font-size: 14px;
+            background: #ffd400;
+            margin: 8px;
+            border: 1px dashed transparent;
+        }
+        .menu-item.select {
+            border: 1px dashed red;
+            background: #FFC107;
+            color: #00d416;
+        }
+        .select-result {
+            width: calc( 80% - 18px );
+            min-height: 182px;
+            padding: 8px;
+            border: 1px dashed red;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="my-menus">
+        <div class="eat-menus"></div>
+        <div class="select-btn">不知道吃啥怎么办</br>?</div>
+    </div>
+    <div class="select-result"></div>
+</body>
+
+<script>
+    var eatSome = {
+        // 菜谱
+        menus: [
+            {id: 0, name: "宫保鸡丁", count: 0},
+            {id: 1, name: "辣子鸡", count: 0},
+            {id: 2, name: "乌鸡汤", count: 0},
+            {id: 3, name: "蒜苔炒肉", count: 0},
+            {id: 4, name: "辣椒炒肉", count: 0},
+            {id: 5, name: "洋葱炒肉", count: 0},
+            {id: 6, name: "煎干鱼", count: 0},
+            {id: 7, name: "煎鱼", count: 0},
+            {id: 8, name: "鱼火锅", count: 0},
+            {id: 9, name: "牛肉火锅", count: 0},
+            {id: 10, name: "麻辣豇豆", count: 0},
+            {id: 11, name: "炖鹅", count: 0},
+            {id: 12, name: "炖鸡", count: 0},
+            {id: 13, name: "麻辣香锅", count: 0},
+            {id: 14, name: "麻婆豆腐", count: 0},
+            {id: 15, name: "螺狮粉", count: 0}
+        ],
+
+        // 初始化
+        init: function () {
+            // 保留操作痕迹
+            var m = localStorage.getItem("menus");
+            m && (this.menus = m);
+            this.renderDom();
+            this.bindEvent();
+        },
+
+        // dom渲染
+        renderDom: function () {
+            // 循环渲染
+            var temp = "";
+            for(var i= 0, len= this.menus.length; i< len; i++){
+                temp += '<span class="menu-item" data-id="'+ this.menus[i].id +'">'+ this.menus[i].name +'</span>';
+            }
+            $(".eat-menus").append(temp);
+        },
+
+        bindEvent: function () {
+            var that = this;
+            // 菜单筛选 后续加入算法
+            $(".select-btn").click(function(e){
+                var temp = "";
+                var smenu = that.getRandomNum(that.getSelectMenus());
+                for(var i= 0, len= smenu.length; i< len; i++) {
+                    temp += '<span class="menu-item" data-id="'+ that.menus[smenu[i]].id +'">'+ that.menus[smenu[i]].name +'</span>';
+                }
+                $(".select-result").empty().append(temp);
+            })
+
+            // 必选菜单
+            $(".menu-item").click(function(e){
+                if ($(".eat-menus").find(".menu-item.select").length >= 4) {
+                    $(this).removeClass("select");
+                    alert("宝宝暂时只有精力做四个菜，你已选超过四个菜了！");
+                    return;
+                }
+                $(this).toggleClass("select");
+            })
+        },
+
+        // 不知道吃啥的时候随便选
+        getRandomNum: function (selectArr, count) {
+            var arr = selectArr || [], 
+                count = count && (count - arr.length) || (4 - arr.length);
+                len = this.menus.length;
+            for(var i= 0; i< count; i++) {
+                var num = parseInt(Math.random()*(len - 1));
+                if (arr.indexOf(num) !== -1) {
+                    i--;
+                    continue;
+                }
+                arr.push(num);
+            }
+            return arr;
+        },
+
+        // 获取已选的菜
+        getSelectMenus: function () {
+            var $select = $(".eat-menus").find(".menu-item.select");
+            var arr = [];
+            $.each($select, function(key, v){
+                arr.push($(v).data("id"));
+            });
+            return arr;
+        }
+    };
+
+    eatSome.init();
+</script>
+</html>
