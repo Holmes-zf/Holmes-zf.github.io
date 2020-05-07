@@ -15,7 +15,7 @@
             user-select: none;
         }
         .my-menus {
-            width: 80%;
+            width: 100%;
             min-height: 200px;
             margin: 0 auto;
         }
@@ -25,23 +25,23 @@
             content: "";
         }
         .my-menus .eat-menus {
-            width: calc( 100% - 88px );
+            width: calc( 80% - 16px );
             min-height: 184px;
             padding: 8px;
-            float: left;
             background: #e3d2d2;
+            margin: 0 auto;
         }
 
         .my-menus .select-btn {
-            float: left;
-            width: 30px;
-            height: calc( 100% - 14px );
-            min-height: 186px;
+            width:  calc( 80% - 22px );
+            height: 40px;
+            line-height: 40px;
             border: 1px dashed yellow;
             text-align: center;
-            padding: 6px 20px;
+            padding: 6px 10px;
             cursor: pointer;
             color: #00ffea;
+            margin: 0 auto;;
         }
         .menu-item {
             display: inline-block;
@@ -53,6 +53,7 @@
             background: #ffd400;
             margin: 8px;
             border: 1px dashed transparent;
+            cursor: pointer;
         }
         .menu-item.select {
             border: 1px dashed red;
@@ -71,7 +72,7 @@
 <body>
     <div class="my-menus">
         <div class="eat-menus"></div>
-        <div class="select-btn">不知道吃啥怎么办</br>?</div>
+        <div class="select-btn">不知道吃啥怎么办?来点我呀！！！</div>
     </div>
     <div class="select-result"></div>
 </body>
@@ -131,12 +132,12 @@
 
             // 必选菜单
             $(".menu-item").click(function(e){
-                if ($(".eat-menus").find(".menu-item.select").length >= 4) {
+                $(this).toggleClass("select");
+                if ($(".eat-menus").find(".menu-item.select").length > 4) {
                     $(this).removeClass("select");
                     alert("宝宝暂时只有精力做四个菜，你已选超过四个菜了！");
                     return;
                 }
-                $(this).toggleClass("select");
             })
         },
 
